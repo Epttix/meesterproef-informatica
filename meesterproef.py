@@ -10,6 +10,8 @@ breedte = 800
 fps = 60
 win = py.display.set_mode((breedte, hoogte))
 py.display.set_caption("mooi spelletje")
+achtergrond_foto = py.image.load(os.path.join('achtergrond_foto.png'))
+#
 game_state = 0
 running = True
 clock = 0
@@ -48,6 +50,13 @@ vijanden_locatie = [[400, 5]  , [400, 200]]
 vijanden_dimensies = [(50, 50), (50, 50)]
 beweeg_richting = ["rechts", "rechts"]
 vijanden_foto = py.image.load(os.path.join('geestje_V3.png'))
+#coin
+coin = []
+coin_aantal = 0
+coin_foto = py.image.load(os.path.join('Coin_25px25px.png'))
+coin_locatie = [(745, 450)]
+coin_dimensies = [(25,25)]
+coin_deactivatie = [-1, ]
 # eind zone
 eindzone_locatie = (745,0)
 eindzone_dimensies = (50,5)
@@ -106,6 +115,7 @@ def draw_scr():
     spike_cycle_frame = cycle_animaties()
     # maakt de achtergrond
     win.fill((0, 0, 0))
+    win.blit(achtergrond_foto, (0,0))
     # foto van de speler
     win.blit(speler_foto, (speler_x_y[0], speler_x_y[1]))
     # speler vierkant
@@ -133,7 +143,9 @@ def draw_scr():
         win.blit(vijanden_foto, vijanden_locatie[i])
     eindzone_rect = py.draw.rect(win, (125, 255, 75), (eindzone_locatie, eindzone_dimensies))
 
-
+    for i in range(len(coin_locatie)):
+        coin.append(py.Rect(coin_locatie[i], coin_dimensies[i]))
+        win.blit(coin_foto, coin_locatie[i])
     # py.draw.rect(win, (0, 0, 0), speler_rect)
     # ververst het scherm
     py.display.update()
@@ -235,6 +247,16 @@ def botsing_spikes(object_rect, running_import):
     return running
 
 
+def botsing_coin(object_rect, coin_aantal_import):
+    coin_hit = object_rect.collidelist(coin)
+    coin_aantal = coin_aantal_import
+    if coin_hit != -1:
+        coin_aantal += 1
+        print(coin_aantal)
+        return coin_aantal, coin_hit
+
+    return coin_aantal, -1
+
 def botsing_eind_zone(object_rect):
     eindhit = object_rect.colliderect(eindzone_rect)
     if eindhit == True:
@@ -245,7 +267,7 @@ def botsing_eind_zone(object_rect):
 # de main game functie
 def main():
     # stelt aantal variabele op
-    global speler_x_y, moving_direction, oude_positie, activated, game_state
+    global speler_x_y, moving_direction, oude_positie, activated, game_state, coin_aantal, coin_deactivatie
     running = True
     reden = ""
     last_key = py.K_w
@@ -326,6 +348,9 @@ def main():
                 speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen, speler_x_y)
                 running = botsing_spikes(speler_rect, running)
                 eind_botsing = botsing_eind_zone(speler_rect)
+                nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal)
+                coin_aantal = nieuwe_coin_aantal
+                coin_deactivatie.append(coin_deactivatie_komt)
                 muur_raak = botsing_muren(speler_rect)
                 running = botsing_vijand(speler_rect, running)
                 # voor het terug zetten van de speler als het tegen een muur dondert
