@@ -56,7 +56,9 @@ coin_aantal = 0
 coin_foto = py.image.load(os.path.join('Coin_25px25px.png'))
 coin_locatie = [(745, 450)]
 coin_dimensies = [(25,25)]
-coin_deactivatie = [-1, ]
+coin_deactivatie = [-1,]
+for i in range(len(coin_locatie)):
+    coin.append(py.Rect(coin_locatie[i], coin_dimensies[i]))
 # eind zone
 eindzone_locatie = (745,0)
 eindzone_dimensies = (50,5)
@@ -71,11 +73,11 @@ def cycle_animaties():
         match index:
             case 0:
                 frame = spike_frames[index]
-                print(index)
+
                 index = 1
             case 1:
                 frame = spike_frames[index]
-                print(index)
+
                 index = 0
     else:
         frame = spike_frames[index]
@@ -111,6 +113,7 @@ def draw_scr():
     teleporteer_binnen = []
     teleporteer_buiten = []
     vijanden = []
+    skip = -1
     #
     spike_cycle_frame = cycle_animaties()
     # maakt de achtergrond
@@ -143,9 +146,29 @@ def draw_scr():
         win.blit(vijanden_foto, vijanden_locatie[i])
     eindzone_rect = py.draw.rect(win, (125, 255, 75), (eindzone_locatie, eindzone_dimensies))
 
+
+    for i in range(len(coin_deactivatie)):
+        for ii in range(len(coin_locatie)):
+            if coin_deactivatie[i] == ii:
+                skip = ii
     for i in range(len(coin_locatie)):
-        coin.append(py.Rect(coin_locatie[i], coin_dimensies[i]))
+        if i == skip:
+            break
         win.blit(coin_foto, coin_locatie[i])
+
+
+
+    # for i in range(len(coin_deactivatie)):
+    #
+    #     for j in range(len(coin_locatie)):
+    #         if coin_deactivatie[i] == j:
+    #             match = coin_deactivatie[i]
+    #
+    #             coin.append(py.Rect(coin_locatie[j], coin_dimensies[j]))
+    #
+    #
+    #             win.blit(coin_foto, coin_locatie[j])
+
     # py.draw.rect(win, (0, 0, 0), speler_rect)
     # ververst het scherm
     py.display.update()
@@ -250,7 +273,7 @@ def botsing_spikes(object_rect, running_import):
 def botsing_coin(object_rect, coin_aantal_import):
     coin_hit = object_rect.collidelist(coin)
     coin_aantal = coin_aantal_import
-    if coin_hit != -1:
+    if coin_hit != -1 and coin_aantal < 1:
         coin_aantal += 1
         print(coin_aantal)
         return coin_aantal, coin_hit
@@ -350,7 +373,8 @@ def main():
                 eind_botsing = botsing_eind_zone(speler_rect)
                 nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal)
                 coin_aantal = nieuwe_coin_aantal
-                coin_deactivatie.append(coin_deactivatie_komt)
+                if coin_deactivatie_komt > -1:
+                    coin_deactivatie.append(coin_deactivatie_komt)
                 muur_raak = botsing_muren(speler_rect)
                 running = botsing_vijand(speler_rect, running)
                 # voor het terug zetten van de speler als het tegen een muur dondert
