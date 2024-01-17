@@ -100,7 +100,7 @@ def eindstand_scherm():
     win.fill((255,255,255))
 
     font = pygame.freetype.Font('PressStart2P-vaV7.ttf',26)
-    font.render_to(win, (20,200), "Je hebt het gehaald woe hoee", (255, 0, 255))
+    font.render_to(win, (20,200), "Je hebt het gehaald woe hoe", (255, 0, 255))
     py.display.update()
 
 # tekent het scherm S
@@ -246,7 +246,7 @@ def botsing_teleporteren(object_rect, tele_in, object_x_y):
         object_plek = object_x_y
     return object_plek, tele_hit
 
-# checkt of object met muur botst M
+# checkt of object met muur botst L
 def botsing_muren(object_rect):
     wallhit = object_rect.collidelist(muren)
     return wallhit
@@ -301,6 +301,7 @@ def main():
     begin_tijd = time.time()
     # de main game loop
     match game_state:
+        # startup scherm L
         case 0:
             while running:
 
@@ -325,7 +326,7 @@ def main():
 
                 # de event loop als er wat gebeurt in het spel komt het hier terecht
                 for events in py.event.get():
-                    # als er op het kruisje in het pop-up-window word geklikt dan stopt de game loop
+                    # als er op het kruisje in het pop-up-window word geklikt dan stopt de game loop M
                     if events.type == py.QUIT:
                         running = False
                         return "gestopt"
@@ -342,8 +343,8 @@ def main():
                                 last_key = events.key
                             case _:
                                 break
-                        # als de speler een richting op gaat en het is geen muur dan beweegt hij totdat
-                        # hij een andere muur raakt
+                        # als de speler een richting op gaat en het is geen muur dan beweegt hij totdat M
+                        # hij een andere muur raakt M
                         if events.key == py.K_w and muur_raak != 0:
                             activated = True
                             moving_direction = "up"
