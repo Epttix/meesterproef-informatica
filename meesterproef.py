@@ -31,6 +31,13 @@ wall_dimensions = [
 wall_position = [
     (0, 0), (0, hoogte - 5), (0, 0), (breedte - 5, 0)     , (0, 350) , (150, 350), (300, hoogte-150), (250, 350) , (75, 275) , (0, 200) , (375, 200), (375, 0), (55, 75) , (600, 75)
 ]
+wall_dimensions_level_2 = [
+
+]
+wall_position_level_2 = [
+
+]
+
 # spike M
 spike_dimensies = [(10, 50)]
 spike_plek = [(375, 300)]
@@ -40,11 +47,19 @@ spike_frame_2 = py.image.load(os.path.join('spike_frame 2.png'))
 spike_frame_1 = py.transform.rotate(spike_frame_1,90)
 spike_frame_2 = py.transform.rotate(spike_frame_2,90)
 spike_frames = [spike_frame_1, spike_frame_2]
+spike_dimensies_level_2 = []
+spike_plek_level_2 = []
 # teleporter S
 teleporteer_binnen_dimensies = [(50, 5), (5, 50)    , (5, 50)]
 teleporteer_binnen_locatie = [(325, 495), (600, 200), (620, 200)]
 teleporteer_buiten_dimensies = [(50, 5), (5, 50)    , (5, 50)]
 teleporteer_buiten_locatie = [(325, 0), (620, 200)  , (600, 200)]
+
+teleporteer_binnen_dimensies_level_2 = []
+teleporteer_binnen_locatie_level_2 = []
+teleporteer_buiten_dimensies_level_2 = []
+teleporteer_buiten_locatie_level_2 = []
+
 # vijanden L
 vijanden_locatie = [[400, 5]  , [400, 200]]
 vijanden_dimensies = [(50, 50), (50, 50)]
@@ -62,6 +77,9 @@ for i in range(len(coin_locatie)):
 # eind zone
 eindzone_locatie = (745,0)
 eindzone_dimensies = (50,5)
+
+eindzone_locatie_level_2 = ()
+eindzone_dimensies_level_2 = ()
 
 #functie om de animaties te cycelen -M
 def cycle_animaties():
@@ -87,20 +105,18 @@ def cycle_animaties():
 #start up_scherm S
 
 def start_up_scherm():
-    global tekst_rect, tekst, win
+    global win
     win.fill((255, 255, 255))
-
-    font = pygame.freetype.Font('PressStart2P-vaV7.ttf', 26)
-    font.render_to(win,(20, 200), "druk op spatie om te beginnen ", (255, 0, 255))
+    start_scherm = py.image.load(os.path.join('start_scherm.png'))
+    win.blit(start_scherm, (0,0))
     py.display.update()
 
 
 #eindstand scherm L
 def eindstand_scherm():
     win.fill((255,255,255))
-
-    font = pygame.freetype.Font('PressStart2P-vaV7.ttf',26)
-    font.render_to(win, (20,200), "Je hebt het gehaald woe hoe", (255, 0, 255))
+    eind_scherm = py.image.load(os.path.join('eind_scherm.png'))
+    win.blit(eind_scherm, (0, 0))
     py.display.update()
 
 # tekent het scherm S
@@ -173,6 +189,14 @@ def draw_scr():
     # ververst het scherm
     py.display.update()
 
+def draw_scr_level_2():
+    global speler_rect
+    win.fill((255,255,255))
+    speler_rect = py.Rect(speler_x_y[0], speler_x_y[1], 50, 50)
+    win.blit(speler_foto, (speler_x_y[0], speler_x_y[1]))
+
+    py.display.update()
+
 # functie voor het bewegen van de speler S
 def moving(object_pos, object_velocity, direction):
     final_position = [0, 0]
@@ -193,7 +217,7 @@ def moving(object_pos, object_velocity, direction):
     return final_position
 
 # functie voor de beweging van de vijand S
-def vijand_beweging():
+def vijand_beweging(muren_import_V2):
     # zet de speed van de vijanden
     speed = 3
     for i in range(len(vijanden_locatie)):
@@ -210,7 +234,7 @@ def vijand_beweging():
         # checkt of vijand een teleporter raakt
         vijanden_locatie[i], telehit = botsing_teleporteren(vijanden[i], teleporteer_binnen, vijand_locatie)
         # checkt of vijand een muur raakt
-        muur_raking = botsing_muren(vijanden[i])
+        muur_raking = botsing_muren(vijanden[i], muren_import_V2)
         # als de vijand een teleporter raakt en het is teleporter 3(index 2)
         # dan wordt hij de andere kant opgestuurd anders wordt er 5 pixels naar rechts gestuurd om
         # niet terug gestuurd te worden
@@ -247,8 +271,8 @@ def botsing_teleporteren(object_rect, tele_in, object_x_y):
     return object_plek, tele_hit
 
 # checkt of object met muur botst L
-def botsing_muren(object_rect):
-    wallhit = object_rect.collidelist(muren)
+def botsing_muren(object_rect , muren_import):
+    wallhit = object_rect.collidelist(muren_import)
     return wallhit
 
 # checkt of object met vijand botst, komt veel overeen met botsing_spikes L
@@ -304,21 +328,23 @@ def main():
         # startup scherm L
         case 0:
             while running:
-
+                muis = pygame.mouse.get_pos()
                 start_up_scherm()
                 for events in py.event.get():
                     if events.type == py.QUIT:
                         running = False
                         return "gestopt"
+                    if events.type == py.MOUSEBUTTONDOWN:
+                        if (muis[0] >= 730 and muis[0] <= 800 and muis[1] >= 115 and muis[1] <= 135):
+                            game_state = 1
+                            reden = main()
+                            running = False
 
-                    if events.type == py.KEYDOWN:
-                        match events.key:
-                            case py.K_SPACE:
-                                game_state = 1
-                                reden = main()
-                                running = False
-                            case _:
-                                pass
+                        if (muis[0] >= 730 and muis[0] <= 800 and muis[1] >= 175 and muis[1] <= 195):
+                            game_state = 2
+                            reden = main()
+                            running = False
+
         case 1:
             while running:
                 clock.tick(fps)
@@ -368,7 +394,7 @@ def main():
                 # executeert een hoop functies voor de speler en omgeving
 
                 draw_scr()
-                vijand_beweging()
+                vijand_beweging(muren)
                 speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen, speler_x_y)
                 running = botsing_spikes(speler_rect, running)
                 eind_botsing = botsing_eind_zone(speler_rect)
@@ -376,7 +402,7 @@ def main():
                 coin_aantal = nieuwe_coin_aantal
                 if coin_deactivatie_komt > -1:
                     coin_deactivatie.append(coin_deactivatie_komt)
-                muur_raak = botsing_muren(speler_rect)
+                muur_raak = botsing_muren(speler_rect, muren)
                 running = botsing_vijand(speler_rect, running)
                 # voor het terug zetten van de speler als het tegen een muur dondert
                 for i in range(len(muren)):
@@ -385,7 +411,7 @@ def main():
                         activated = False
                 #
                 if eind_botsing == 1:
-                    game_state = 2
+                    game_state = 99
                     activated = False
                     reden = main()
                     running = False
@@ -417,7 +443,83 @@ def main():
             tijd_duratie = eind_tijd - begin_tijd
             tijd_duratie = round(tijd_duratie, 2)
             print(str(tijd_duratie) + " seconde")
+
         case 2:
+            while   running:
+                clock.tick(fps)
+
+                # de event loop als er wat gebeurt in het spel komt het hier terecht
+                for events in py.event.get():
+                    # als er op het kruisje in het pop-up-window word geklikt dan stopt de game loop M
+                    if events.type == py.QUIT:
+                        running = False
+                        return "gestopt"
+                    if events.type == py.KEYDOWN and activated is False:
+                        match events.key:
+                            case py.K_w:
+                                last_key = events.key
+                            case py.K_s:
+                                last_key = events.key
+                            case py.K_a:
+                                last_key = events.key
+                            case py.K_d:
+                                last_key = events.key
+                            case _:
+                                break
+                        if events.key == py.K_w and muur_raak != 0:
+                            activated = True
+                            moving_direction = "up"
+                            nieuwe_speler_positie = moving(speler_x_y, 5, moving_direction, )
+                        elif events.key == py.K_s and muur_raak != 1:
+                            activated = True
+                            moving_direction = "down"
+                            nieuwe_speler_positie = moving(speler_x_y, 5, moving_direction, )
+                        elif events.key == py.K_a and muur_raak != 2:
+                            activated = True
+                            moving_direction = "left"
+                            nieuwe_speler_positie = moving(speler_x_y, 5, moving_direction, )
+                        elif events.key == py.K_d and muur_raak != 3:
+                            activated = True
+                            moving_direction = "right"
+                            nieuwe_speler_positie = moving(speler_x_y, 5, moving_direction, )
+                        # hier wordt de oude positie gezet voor mogelijke terugzetting
+                        # en de nieuwe locatie wordt op de speler gedrukt
+                        oude_positie = speler_x_y
+                        speler_x_y = nieuwe_speler_positie
+                draw_scr_level_2()
+
+                muur_raak = -1
+                #muur_raak = botsing_muren(speler_rect, )
+
+                # for i in range(len(muren)):
+                #     if muur_raak == i and tele_hit == -1:
+                #         speler_x_y = oude_positie
+                #         activated = False
+
+
+                if activated is True:
+                    match last_key:
+                        case py.K_w:
+                            moving_direction = "up"
+                            nieuwe_speler_positie = moving(speler_x_y, speed, moving_direction, )
+                            oude_positie = speler_x_y
+                            speler_x_y = nieuwe_speler_positie
+                        case py.K_s:
+                            moving_direction = "down"
+                            nieuwe_speler_positie = moving(speler_x_y, speed, moving_direction, )
+                            oude_positie = speler_x_y
+                            speler_x_y = nieuwe_speler_positie
+                        case py.K_a:
+                            moving_direction = "left"
+                            nieuwe_speler_positie = moving(speler_x_y, speed, moving_direction, )
+                            oude_positie = speler_x_y
+                            speler_x_y = nieuwe_speler_positie
+                        case py.K_d:
+                            moving_direction = "right"
+                            nieuwe_speler_positie = moving(speler_x_y, speed, moving_direction, )
+                            oude_positie = speler_x_y
+                            speler_x_y = nieuwe_speler_positie
+        case 99:
             while running:
                 eindstand_scherm()
                 for events in py.event.get():
