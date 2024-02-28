@@ -521,13 +521,23 @@ def main():
                             speler_x_y = nieuwe_speler_positie
         case 99:
             while running:
+                muis = pygame.mouse.get_pos()
                 eindstand_scherm()
                 for events in py.event.get():
                     if events.type == py.QUIT:
                         running = False
-                        print("gestopt")
-
                         return "gestopt"
+                    if events.type == py.MOUSEBUTTONDOWN:
+                        if (muis[0] >= 245 and muis[0] <= 350 and muis[1] >= 250 and muis[1] <= 300):
+                            game_state = 2
+                            reden = main()
+                            running = False
+
+                        if (muis[0] >= 445 and muis[0] <= 550 and muis[1] >= 250 and muis[1] <= 300):
+                            game_state = 0
+                            speler_x_y = speler_start_plek
+                            reden = main()
+                            running = False
 
     if reden == "gestopt":
         return "gestopt"
