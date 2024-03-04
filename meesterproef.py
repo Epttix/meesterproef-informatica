@@ -32,13 +32,12 @@ wall_position = [
     (0, 0), (0, hoogte - 5), (0, 0), (breedte - 5, 0)     , (0, 350) , (150, 350), (300, hoogte-150), (250, 350) , (75, 275) , (0, 200) , (375, 200), (375, 0), (55, 75) , (600, 75)
 ]
 wall_dimensions_level_2 = [
-
+    (breedte, 5), (breedte, 5), (5, hoogte), (5, hoogte),(75,25),(25, 50),(320,25),(25,200),  (50,25),(50,25),(25,50),(25,50),(25,50),(50,25),(25,50)             ,(25,50),(50,25)   ,(25,70),(25,125),(320,25)   ,(25,175),(75,25)
 ]
 wall_position_level_2 = [
-
+    (0, 0), (0, hoogte - 5), (0, 0), (breedte - 5, 0)   ,(5,105),(55,55) ,(55,55),(350,80),  (180,205),(300,430),(155,305),(155,445),(645,445),(450,355),(425,230),(500,180),(670,160),(730,280),(425,55),(425,55),(720,55),(720,205)
 ]
-
-# spike M
+# spike50
 spike_dimensies = [(10, 50)]
 spike_plek = [(375, 300)]
 #spike_foto = py.image.load(os.path.join('spike.png'))
@@ -47,24 +46,28 @@ spike_frame_2 = py.image.load(os.path.join('spike_frame 2.png'))
 spike_frame_1 = py.transform.rotate(spike_frame_1,90)
 spike_frame_2 = py.transform.rotate(spike_frame_2,90)
 spike_frames = [spike_frame_1, spike_frame_2]
-spike_dimensies_level_2 = []
-spike_plek_level_2 = []
+spike_dimensies_level_2 = [(5,50),(5,50)]
+spike_plek_level_2 = [(0,445),(445,230)]
 # teleporter S
 teleporteer_binnen_dimensies = [(50, 5), (5, 50)    , (5, 50)]
 teleporteer_binnen_locatie = [(325, 495), (600, 200), (620, 200)]
 teleporteer_buiten_dimensies = [(50, 5), (5, 50)    , (5, 50)]
 teleporteer_buiten_locatie = [(325, 0), (620, 200)  , (600, 200)]
 
-teleporteer_binnen_dimensies_level_2 = []
-teleporteer_binnen_locatie_level_2 = []
-teleporteer_buiten_dimensies_level_2 = []
-teleporteer_buiten_locatie_level_2 = []
+teleporteer_binnen_dimensies_level_2 = [(5,50),(50,5)]
+teleporteer_binnen_locatie_level_2 = [(0,230),(745,205)]
+teleporteer_buiten_dimensies_level_2 = [(5,50),(5,50)]
+teleporteer_buiten_locatie_level_2 = [(375,230),(375,230)]
 
 # vijanden L
 vijanden_locatie = [[400, 5]  , [400, 200]]
 vijanden_dimensies = [(50, 50), (50, 50)]
 beweeg_richting = ["rechts", "rechts"]
 vijanden_foto = py.image.load(os.path.join('geestje_V3.png'))
+vijanden_locatie_level_2 = [[5,5]  , [300 ,380]]
+vijanden_dimensies_level_2 = [(50, 50), (50, 50)]
+beweeg_richting_level_2 = ["rechts", "rechts"]
+
 #coin S
 coin = []
 coin_aantal = 0
@@ -78,8 +81,8 @@ for i in range(len(coin_locatie)):
 eindzone_locatie = (745,0)
 eindzone_dimensies = (50,5)
 
-eindzone_locatie_level_2 = ()
-eindzone_dimensies_level_2 = ()
+eindzone_locatie_level_2 = (5,55)
+eindzone_dimensies_level_2 = (50,50)
 
 #functie om de animaties te cycelen -M
 def cycle_animaties():
@@ -190,10 +193,31 @@ def draw_scr():
     py.display.update()
 
 def draw_scr_level_2():
-    global speler_rect
+    global speler_rect, muren_level_2, eindzone_rect_level_2, teleporteer_binnen_level_2, teleporteer_buiten_level_2, vijanden_level_2
+    muren_level_2 = []
+    teleporteer_binnen_level_2 = []
+    teleporteer_buiten_level_2 = []
+    vijanden_level_2 = []
     win.fill((255,255,255))
+
+    for i in range(len(wall_dimensions_level_2)):
+        muren_level_2.append(py.draw.rect(win, (255, 255, 0), (wall_position_level_2[i], wall_dimensions_level_2[i])))
+
+    for i in range(len(teleporteer_binnen_locatie_level_2)):
+        teleporteer_binnen_level_2.append(py.draw.rect(win, (128, 128, 255), (teleporteer_binnen_locatie_level_2[i], teleporteer_binnen_dimensies_level_2[i])))
+    for i in range(len(teleporteer_binnen_locatie_level_2)):
+        teleporteer_buiten_level_2.append(py.draw.rect(win, (0, 255, 255), (teleporteer_buiten_locatie_level_2[i], teleporteer_buiten_dimensies_level_2[i])))
+
+    for i in range(len(vijanden_locatie_level_2)):
+        vijanden_level_2.append(py.Rect(vijanden_locatie_level_2[i], vijanden_dimensies_level_2[i]))
+
+        #vijanden.append(py.draw.rect(win, (125, 125, 125), (vijanden_locatie[i], vijanden_dimensies[i])))
+        win.blit(vijanden_foto, vijanden_locatie_level_2[i])
+
     speler_rect = py.Rect(speler_x_y[0], speler_x_y[1], 50, 50)
     win.blit(speler_foto, (speler_x_y[0], speler_x_y[1]))
+
+    eindzone_rect_level_2 = py.draw.rect(win, (125, 255, 75), (eindzone_locatie_level_2, eindzone_dimensies_level_2))
 
     py.display.update()
 
@@ -217,54 +241,54 @@ def moving(object_pos, object_velocity, direction):
     return final_position
 
 # functie voor de beweging van de vijand S
-def vijand_beweging(muren_import_V2):
+def vijand_beweging(muren_import_V2, vijanden_import, vijanden_locatie_import, beweeg_richting_import, teleporteer_binnen_import, teleporteer_buiten_import):
     # zet de speed van de vijanden
     speed = 3
-    for i in range(len(vijanden_locatie)):
+    for i in range(len(vijanden_locatie_import)):
         # bewaart de oude locatie zodat de vijand terug gezet kan worden als iets raakt
-        oude_locatie = vijanden_locatie[i]
+        oude_locatie = vijanden_locatie_import[i]
         # beslist welke kant de vijand op beweegt
-        match beweeg_richting[i]:
+        match beweeg_richting_import[i]:
             case "rechts":
-                vijanden_locatie[i][0] = vijanden_locatie[i][0] + speed
+                vijanden_locatie_import[i][0] = vijanden_locatie_import[i][0] + speed
             case "links":
-                vijanden_locatie[i][0] = vijanden_locatie[i][0] - speed
+                vijanden_locatie_import[i][0] = vijanden_locatie_import[i][0] - speed
         # zet tuple om in list om gegevens te wijzigen
-        vijand_locatie = list(vijanden_locatie[i])
+        vijand_locatie = list(vijanden_locatie_import[i])
         # checkt of vijand een teleporter raakt
-        vijanden_locatie[i], telehit = botsing_teleporteren(vijanden[i], teleporteer_binnen, vijand_locatie)
+        vijanden_locatie_import[i], telehit = botsing_teleporteren(vijanden_import[i], teleporteer_binnen_import,teleporteer_buiten_import, vijand_locatie)
         # checkt of vijand een muur raakt
-        muur_raking = botsing_muren(vijanden[i], muren_import_V2)
+        muur_raking = botsing_muren(vijanden_import[i], muren_import_V2)
         # als de vijand een teleporter raakt en het is teleporter 3(index 2)
         # dan wordt hij de andere kant opgestuurd anders wordt er 5 pixels naar rechts gestuurd om
         # niet terug gestuurd te worden
         if telehit != -1:
             if telehit == 2:
-                vijanden_locatie[i] = [vijanden_locatie[i][0] - 55, vijanden_locatie[i][1]]
+                vijanden_locatie_import[i] = [vijanden_locatie_import[i][0] - 55, vijanden_locatie_import[i][1]]
 
-            vijanden_locatie[i] = [vijanden_locatie[i][0] + 5, vijanden_locatie[i][1]]
+            vijanden_locatie_import[i] = [vijanden_locatie_import[i][0] + 5, vijanden_locatie_import[i][1]]
         else:
-            vijanden_locatie[i] = [vijanden_locatie[i][0], vijanden_locatie[i][1]]
+            vijanden_locatie_import[i] = [vijanden_locatie_import[i][0], vijanden_locatie_import[i][1]]
         # als de muur wordt geraakt en je gaat naar rechts ga je naar links met een zetje en andersom
         if muur_raking > -1 and telehit == -1:
-            match beweeg_richting[i]:
+            match beweeg_richting_import[i]:
                 case "rechts":
-                    vijanden_locatie[i][0] = oude_locatie[0] - speed * 2
-                    vijanden_locatie[i][1] = oude_locatie[1]
-                    beweeg_richting[i] = "links"
+                    vijanden_locatie_import[i][0] = oude_locatie[0] - speed * 2
+                    vijanden_locatie_import[i][1] = oude_locatie[1]
+                    beweeg_richting_import[i] = "links"
 
                 case "links":
-                    vijanden_locatie[i][0] = oude_locatie[0] + speed * 2
-                    vijanden_locatie[i][1] = oude_locatie[1]
-                    beweeg_richting[i] = "rechts"
+                    vijanden_locatie_import[i][0] = oude_locatie[0] + speed * 2
+                    vijanden_locatie_import[i][1] = oude_locatie[1]
+                    beweeg_richting_import[i] = "rechts"
 
 # kijkt of object botst met teleporters M
-def botsing_teleporteren(object_rect, tele_in, object_x_y):
+def botsing_teleporteren(object_rect, tele_in, tele_uit, object_x_y):
     tele_hit = object_rect.collidelist(tele_in)
     object_plek = []
     if tele_hit != -1:
-        object_plek.append(teleporteer_buiten_locatie[tele_hit][0])
-        object_plek.append(teleporteer_buiten_locatie[tele_hit][1])
+        object_plek.append(tele_uit[tele_hit][0])
+        object_plek.append(tele_uit[tele_hit][1])
         print(tele_hit)
     else:
         object_plek = object_x_y
@@ -276,8 +300,8 @@ def botsing_muren(object_rect , muren_import):
     return wallhit
 
 # checkt of object met vijand botst, komt veel overeen met botsing_spikes L
-def botsing_vijand(object_rect, running_import):
-    vijand_hit = object_rect.collidelist(vijanden)
+def botsing_vijand(object_rect, running_import, vijanden_import):
+    vijand_hit = object_rect.collidelist(vijanden_import)
     if vijand_hit > -1:
         running = False
     else:
@@ -304,8 +328,8 @@ def botsing_coin(object_rect, coin_aantal_import):
 
     return coin_aantal, -1
 # botsing met de eind zone L
-def botsing_eind_zone(object_rect):
-    eindhit = object_rect.colliderect(eindzone_rect)
+def botsing_eind_zone(object_rect, eindzone_rect_import):
+    eindhit = object_rect.colliderect(eindzone_rect_import)
     if eindhit == True:
         return 1
     else:
@@ -394,16 +418,16 @@ def main():
                 # executeert een hoop functies voor de speler en omgeving
 
                 draw_scr()
-                vijand_beweging(muren)
-                speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen, speler_x_y)
+                vijand_beweging(muren, vijanden, vijanden_locatie, beweeg_richting, teleporteer_binnen, teleporteer_buiten)
+                speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen,teleporteer_buiten, speler_x_y)
                 running = botsing_spikes(speler_rect, running)
-                eind_botsing = botsing_eind_zone(speler_rect)
+                eind_botsing = botsing_eind_zone(speler_rect, eindzone_rect)
                 nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal)
                 coin_aantal = nieuwe_coin_aantal
                 if coin_deactivatie_komt > -1:
                     coin_deactivatie.append(coin_deactivatie_komt)
                 muur_raak = botsing_muren(speler_rect, muren)
-                running = botsing_vijand(speler_rect, running)
+                running = botsing_vijand(speler_rect, running, vijanden)
                 # voor het terug zetten van de speler als het tegen een muur dondert
                 for i in range(len(muren)):
                     if muur_raak == i and tele_hit == -1:
@@ -445,6 +469,8 @@ def main():
             print(str(tijd_duratie) + " seconde")
 
         case 2:
+            speler_x_y = [80,80]
+
             while   running:
                 clock.tick(fps)
 
@@ -488,13 +514,23 @@ def main():
                         speler_x_y = nieuwe_speler_positie
                 draw_scr_level_2()
 
-                muur_raak = -1
-                #muur_raak = botsing_muren(speler_rect, )
 
-                # for i in range(len(muren)):
-                #     if muur_raak == i and tele_hit == -1:
-                #         speler_x_y = oude_positie
-                #         activated = False
+                muur_raak = botsing_muren(speler_rect, muren_level_2)
+                vijand_beweging(muren_level_2, vijanden_level_2, vijanden_locatie_level_2, beweeg_richting_level_2, teleporteer_binnen_level_2, teleporteer_buiten_level_2)
+
+                running = botsing_vijand(speler_rect, running, vijanden_level_2)
+
+
+                speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen_level_2,teleporteer_buiten_level_2, speler_x_y)
+
+
+
+
+                eind_botsing = botsing_eind_zone(speler_rect, eindzone_rect_level_2)
+                for i in range(len(muren_level_2)):
+                    if muur_raak == i and tele_hit == -1:
+                        speler_x_y = oude_positie
+                        activated = False
 
 
                 if activated is True:
@@ -519,6 +555,12 @@ def main():
                             nieuwe_speler_positie = moving(speler_x_y, speed, moving_direction, )
                             oude_positie = speler_x_y
                             speler_x_y = nieuwe_speler_positie
+
+                if eind_botsing == 1:
+                    game_state = 99
+                    activated = False
+                    reden = main()
+                    running = False
         case 99:
             while running:
                 muis = pygame.mouse.get_pos()
