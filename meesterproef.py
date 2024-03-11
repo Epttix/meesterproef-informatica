@@ -11,8 +11,10 @@ fps = 60
 win = py.display.set_mode((breedte, hoogte))
 py.display.set_caption("mooi spelletje")
 achtergrond_foto = py.image.load(os.path.join('achtergrond_foto.png'))
+achtergrond_foto_level_2 = py.image.load(os.path.join('achtergrond_level_2.png'))
 #algemene game variabele M
 game_state = 0
+import_game_state = 1
 running = True
 clock = 0
 index = 0
@@ -70,13 +72,18 @@ beweeg_richting_level_2 = ["rechts", "rechts"]
 
 #coin S
 coin = []
-coin_aantal = 0
+gedeactiveerd = []
+coin_level_2 = []
+gedeactiveerd_level_2 = []
 coin_foto = py.image.load(os.path.join('Coin_25px25px.png'))
 coin_locatie = [(745, 450)]
 coin_dimensies = [(25,25)]
-coin_deactivatie = [-1, ]
-for i in range(len(coin_locatie)):
-    coin.append(py.Rect(coin_locatie[i], coin_dimensies[i]))
+coin_aantal = 0
+coin_locatie_level_2 = [(757, 160)]
+coin_dimensies_level_2 = [(25,25)]
+
+
+
 # eind zone
 eindzone_locatie = (745,0)
 eindzone_dimensies = (50,5)
@@ -122,11 +129,18 @@ def eindstand_scherm():
     win.blit(eind_scherm, (0, 0))
     py.display.update()
 
+#scherm als je dood gaat
+def dood_scherm():
+    win.fill((255,255,255))
+    dood_scherm = py.image.load(os.path.join('dood_scherm.png'))
+    win.blit(dood_scherm,(0,0))
+    py.display.update()
+
 # tekent het scherm S
 
 
 def draw_scr():
-    global muren, speler_rect, spike, teleporteer_binnen, teleporteer_buiten, vijanden, eindzone_rect, spike_foto
+    global muren, speler_rect, spike, teleporteer_binnen, teleporteer_buiten, vijanden, eindzone_rect, spike_foto, coin
     muren = []
     spike = []
     teleporteer_binnen = []
@@ -165,15 +179,24 @@ def draw_scr():
         win.blit(vijanden_foto, vijanden_locatie[i])
     eindzone_rect = py.draw.rect(win, (125, 255, 75), (eindzone_locatie, eindzone_dimensies))
 
-    # coin S
-    for i in range(len(coin_deactivatie)):
-        for ii in range(len(coin_locatie)):
-            if coin_deactivatie[i] == ii:
-                skip = ii
     for i in range(len(coin_locatie)):
-        if i == skip:
-            break
-        win.blit(coin_foto, coin_locatie[i])
+        if gedeactiveerd != []:
+            for ii in range(len(gedeactiveerd)):
+                if i != gedeactiveerd[ii]:
+                    coin.append(py.Rect(coin_locatie[i],coin_dimensies[i]))
+                    win.blit(coin_foto, coin_locatie[i])
+        else:
+            coin.append(py.Rect(coin_locatie[i], coin_dimensies[i]))
+            win.blit(coin_foto, coin_locatie[i])
+    # coin S
+    # for i in range(len(coin_deactivatie)):
+    #     for ii in range(len(coin_locatie)):
+    #         if coin_deactivatie[i] == ii:
+    #             skip = ii
+    # for i in range(len(coin_locatie)):
+    #     if i == skip:
+    #         break
+    #     win.blit(coin_foto, coin_locatie[i])
 
 
     # oude code niet gebruikt S
@@ -200,6 +223,8 @@ def draw_scr_level_2():
     vijanden_level_2 = []
     win.fill((255,255,255))
 
+    win.blit(achtergrond_foto_level_2,(0,0))
+
     for i in range(len(wall_dimensions_level_2)):
         muren_level_2.append(py.draw.rect(win, (255, 255, 0), (wall_position_level_2[i], wall_dimensions_level_2[i])))
 
@@ -216,6 +241,17 @@ def draw_scr_level_2():
 
     speler_rect = py.Rect(speler_x_y[0], speler_x_y[1], 50, 50)
     win.blit(speler_foto, (speler_x_y[0], speler_x_y[1]))
+
+
+    for i in range(len(coin_locatie_level_2)):
+        if gedeactiveerd_level_2 != []:
+            for ii in range(len(gedeactiveerd_level_2)):
+                if i != gedeactiveerd_level_2[ii]:
+                    coin_level_2.append(py.Rect(coin_locatie_level_2[i],coin_dimensies_level_2[i]))
+                    win.blit(coin_foto, coin_locatie_level_2[i])
+        else:
+            coin_level_2.append(py.Rect(coin_locatie_level_2[i], coin_dimensies_level_2[i]))
+            win.blit(coin_foto, coin_locatie_level_2[i])
 
     eindzone_rect_level_2 = py.draw.rect(win, (125, 255, 75), (eindzone_locatie_level_2, eindzone_dimensies_level_2))
 
@@ -289,7 +325,6 @@ def botsing_teleporteren(object_rect, tele_in, tele_uit, object_x_y):
     if tele_hit != -1:
         object_plek.append(tele_uit[tele_hit][0])
         object_plek.append(tele_uit[tele_hit][1])
-        print(tele_hit)
     else:
         object_plek = object_x_y
     return object_plek, tele_hit
@@ -318,15 +353,17 @@ def botsing_spikes(object_rect, running_import):
     return running
 
 # checkt of object met een coin botst S
-def botsing_coin(object_rect, coin_aantal_import):
-    coin_hit = object_rect.collidelist(coin)
+def botsing_coin(object_rect, coin_aantal_import, coin_import, gedeactiveerd_import):
+    coin_hit = object_rect.collidelist(coin_import)
     coin_aantal = coin_aantal_import
-    if coin_hit != -1 and coin_aantal < 1:
-        coin_aantal += 1
-        print(coin_aantal)
-        return coin_aantal, coin_hit
+#     if coin_hit != -1 and coin_aantal < 1:
+    if coin_hit != -1:
+        for i in range(len(gedeactiveerd_import)):
+            if coin_hit != i:
+                coin_aantal += 1
 
-    return coin_aantal, -1
+    return coin_aantal, coin_hit
+
 # botsing met de eind zone L
 def botsing_eind_zone(object_rect, eindzone_rect_import):
     eindhit = object_rect.colliderect(eindzone_rect_import)
@@ -336,7 +373,7 @@ def botsing_eind_zone(object_rect, eindzone_rect_import):
         return 0
 
 # de main game functie S
-def main():
+def main(import_game_state):
     # stelt aantal variabele op
     global speler_x_y, moving_direction, oude_positie, activated, game_state, coin_aantal, coin_deactivatie
     running = True
@@ -361,12 +398,12 @@ def main():
                     if events.type == py.MOUSEBUTTONDOWN:
                         if (muis[0] >= 730 and muis[0] <= 800 and muis[1] >= 115 and muis[1] <= 135):
                             game_state = 1
-                            reden = main()
+                            reden = main(import_game_state)
                             running = False
 
                         if (muis[0] >= 730 and muis[0] <= 800 and muis[1] >= 175 and muis[1] <= 195):
                             game_state = 2
-                            reden = main()
+                            reden = main(import_game_state)
                             running = False
 
         case 1:
@@ -422,10 +459,12 @@ def main():
                 speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen,teleporteer_buiten, speler_x_y)
                 running = botsing_spikes(speler_rect, running)
                 eind_botsing = botsing_eind_zone(speler_rect, eindzone_rect)
-                nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal)
+
+                nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal, coin, gedeactiveerd)
                 coin_aantal = nieuwe_coin_aantal
                 if coin_deactivatie_komt > -1:
-                    coin_deactivatie.append(coin_deactivatie_komt)
+                    gedeactiveerd.append(coin_deactivatie_komt)
+
                 muur_raak = botsing_muren(speler_rect, muren)
                 running = botsing_vijand(speler_rect, running, vijanden)
                 # voor het terug zetten van de speler als het tegen een muur dondert
@@ -437,7 +476,7 @@ def main():
                 if eind_botsing == 1:
                     game_state = 99
                     activated = False
-                    reden = main()
+                    reden = main(import_game_state)
                     running = False
 
 
@@ -520,6 +559,10 @@ def main():
 
                 running = botsing_vijand(speler_rect, running, vijanden_level_2)
 
+                nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal, coin_level_2, gedeactiveerd_level_2)
+                coin_aantal = nieuwe_coin_aantal
+                if coin_deactivatie_komt > -1:
+                    gedeactiveerd_level_2.append(coin_deactivatie_komt)
 
                 speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen_level_2,teleporteer_buiten_level_2, speler_x_y)
 
@@ -559,8 +602,29 @@ def main():
                 if eind_botsing == 1:
                     game_state = 99
                     activated = False
-                    reden = main()
+                    reden = main(import_game_state)
                     running = False
+        case 98:
+            while running:
+                muis = pygame.mouse.get_pos()
+                dood_scherm()
+                for events in py.event.get():
+                    if events.type == py.QUIT:
+                        running = False
+                        return "gestopt"
+                    if events.type == py.MOUSEBUTTONDOWN:
+                        if (muis[0] >= 150 and muis[0] <= 300 and muis[1] >= 400 and muis[1] <= 450):
+                            game_state = import_game_state
+                            reden = main(import_game_state)
+                            running = False
+
+                        if (muis[0] >= 500 and muis[0] <= 650 and muis[1] >= 400 and muis[1] <= 450):
+                            game_state = 0
+                            speler_x_y = speler_start_plek
+                            reden = main(import_game_state)
+                            running = False
+
+
         case 99:
             while running:
                 muis = pygame.mouse.get_pos()
@@ -572,27 +636,30 @@ def main():
                     if events.type == py.MOUSEBUTTONDOWN:
                         if (muis[0] >= 245 and muis[0] <= 350 and muis[1] >= 250 and muis[1] <= 300):
                             game_state = 2
-                            reden = main()
+                            reden = main(import_game_state)
                             running = False
 
                         if (muis[0] >= 445 and muis[0] <= 550 and muis[1] >= 250 and muis[1] <= 300):
                             game_state = 0
                             speler_x_y = speler_start_plek
-                            reden = main()
+                            reden = main(import_game_state)
                             running = False
 
     if reden == "gestopt":
         return "gestopt"
 
 
-    return "dood"
+    return "dood", game_state
 # zorgt ervoor dat de goede main word uitgevoerd hier kwam max achter M
+eind_game_state = 0
 if __name__ == "__main__":
-    reden = main()
+    reden, eind_game_state = main(import_game_state)
+
 # zorgt ervoor dat als je niet dood bent dat je opnieuw kan proberen L
 while reden != "gestopt":
     if reden == "dood":
-        game_state = 0
+        import_game_state = eind_game_state
+        game_state = 98
         activated = False
         speler_x_y = speler_start_plek
-        reden = main()
+        reden, eind_game_state = main(import_game_state)
