@@ -17,7 +17,9 @@ game_state = 0
 import_game_state = 1
 running = True
 clock = 0
+clock_v2 = 0
 index = 0
+indexv2 = 0
 # speler variabele L
 speler_x_y = speler_start_plek = [5, 445]
 oude_positie = speler_x_y
@@ -43,18 +45,84 @@ wall_position_level_2 = [
 spike_dimensies = [(10, 50)]
 spike_plek = [(375, 300)]
 #spike_foto = py.image.load(os.path.join('spike.png'))
-spike_frame_1 = py.image.load(os.path.join('spike_frame 1.png'))
-spike_frame_2 = py.image.load(os.path.join('spike_frame 2.png'))
+spike_frame_1 = spike_frame_1_level_2 = py.image.load(os.path.join('spike_frame 1.png'))
+spike_frame_2 = spike_frame_2_level_2 = py.image.load(os.path.join('spike_frame 2.png'))
 spike_frame_1 = py.transform.rotate(spike_frame_1,90)
 spike_frame_2 = py.transform.rotate(spike_frame_2,90)
 spike_frames = [spike_frame_1, spike_frame_2]
-spike_dimensies_level_2 = [(5,50),(5,50)]
-spike_plek_level_2 = [(0,445),(445,230)]
+spike_dimensies_level_2 = [(5,50),(5,50),(5,50)]
+spike_plek_level_2 = [(0,445),(445,230),(720,80)]
+#level 2 spike 1
+spike_frame_1_level_2_spike_1 = spike_frame_1
+spike_frame_2_level_2_spike_1 = spike_frame_2
+spike_frame_1_level_2_spike_1 = py.transform.rotate(spike_frame_1_level_2_spike_1, 180)
+spike_frame_2_level_2_spike_1 = py.transform.rotate(spike_frame_2_level_2_spike_1, 180)
+spike_frames_level_2_spike_1 = [spike_frame_1_level_2_spike_1, spike_frame_2_level_2_spike_1]
+#level 2 spike 2
+spike_frame_1_level_2_spike_2 = spike_frame_1
+spike_frame_2_level_2_spike_2 = spike_frame_2
+spike_frame_1_level_2_spike_2 = py.transform.rotate(spike_frame_1_level_2_spike_2, 180)
+spike_frame_2_level_2_spike_2 = py.transform.rotate(spike_frame_2_level_2_spike_2, 180)
+spike_frames_level_2_spike_2 = [spike_frame_1_level_2_spike_2, spike_frame_2_level_2_spike_2]
+#level 2 spike 3
+spike_frame_1_level_2_spike_3 = spike_frame_1
+spike_frame_2_level_2_spike_3 = spike_frame_2
+spike_frame_1_level_2_spike_3 = py.transform.rotate(spike_frame_1_level_2_spike_3, 180)
+spike_frame_2_level_2_spike_3 = py.transform.rotate(spike_frame_2_level_2_spike_3, 180)
+spike_frame_1_level_2_spike_3 = py.transform.flip(spike_frame_1_level_2_spike_3, flip_x=True, flip_y=False)
+spike_frame_2_level_2_spike_3 = py.transform.flip(spike_frame_2_level_2_spike_3, flip_x=True, flip_y=False)
+spike_frames_level_2_spike_3 = [spike_frame_1_level_2_spike_3, spike_frame_2_level_2_spike_3]
 # teleporter S
+teleporteer_frame_1 = py.image.load(os.path.join('teleporteer_frame_1.png'))
+teleporteer_frame_2 = py.image.load(os.path.join('teleporteer_frame_2.png'))
+
+
+#portal 1
+teleporteer_frame_1_level_1_portal_1 = teleporteer_frame_1
+teleporteer_frame_2_level_1_portal_1 = teleporteer_frame_2
+
+
+teleporteer_frames_level_1_portal_1 = [teleporteer_frame_1_level_1_portal_1, teleporteer_frame_2_level_1_portal_1]
+#portal 2
+teleporteer_frame_1_level_1_portal_2 = teleporteer_frame_1
+teleporteer_frame_2_level_1_portal_2 = teleporteer_frame_2
+
+teleporteer_frame_1_level_1_portal_2 = py.transform.rotate(teleporteer_frame_1_level_1_portal_2, 90)
+teleporteer_frame_2_level_1_portal_2 = py.transform.rotate(teleporteer_frame_2_level_1_portal_2, 90)
+
+
+teleporteer_frames_level_1_portal_2 = [teleporteer_frame_1_level_1_portal_2, teleporteer_frame_2_level_1_portal_2]
+#portal 1
+teleporteer_frame_1_level_1_portal_3 = teleporteer_frame_1
+teleporteer_frame_2_level_1_portal_3 = teleporteer_frame_2
+
+teleporteer_frame_1_level_1_portal_3 = py.transform.rotate(teleporteer_frame_1_level_1_portal_3, 90)
+teleporteer_frame_2_level_1_portal_3 = py.transform.rotate(teleporteer_frame_2_level_1_portal_3, 90)
+
+teleporteer_frame_1_level_1_portal_3 = py.transform.flip(teleporteer_frame_1_level_1_portal_3, True, False)
+teleporteer_frame_2_level_1_portal_3 = py.transform.flip(teleporteer_frame_2_level_1_portal_3, True, False)
+
+teleporteer_frames_level_1_portal_3 = [teleporteer_frame_1_level_1_portal_3, teleporteer_frame_2_level_1_portal_3]
+
 teleporteer_binnen_dimensies = [(50, 5), (5, 50)    , (5, 50)]
 teleporteer_binnen_locatie = [(325, 495), (600, 200), (620, 200)]
 teleporteer_buiten_dimensies = [(50, 5), (5, 50)    , (5, 50)]
 teleporteer_buiten_locatie = [(325, 0), (620, 200)  , (600, 200)]
+
+teleporteer_frame_1_level_1_portal_1_buiten = teleporteer_frame_1
+teleporteer_frame_2_level_1_portal_1_buiten = teleporteer_frame_2
+
+
+teleporteer_frame_1_level_1_portal_2_buiten = teleporteer_frame_1
+teleporteer_frame_2_level_1_portal_2_buiten = teleporteer_frame_2
+
+
+teleporteer_frame_1_level_1_portal_3_buiten = teleporteer_frame_1
+teleporteer_frame_2_level_1_portal_3_buiten = teleporteer_frame_2
+
+
+
+
 
 teleporteer_binnen_dimensies_level_2 = [(5,50),(50,5)]
 teleporteer_binnen_locatie_level_2 = [(0,230),(745,205)]
@@ -91,8 +159,8 @@ eindzone_dimensies = (50,5)
 eindzone_locatie_level_2 = (5,55)
 eindzone_dimensies_level_2 = (50,50)
 
-#functie om de animaties te cycelen -M
-def cycle_animaties():
+#functie om de spike animaties te cycelen -M
+def spike_cycle_animaties(spike_frames_import):
     global clock, index, frame
 
     clock += 1
@@ -100,17 +168,41 @@ def cycle_animaties():
     if clock % 10 == 0:
         match index:
             case 0:
-                frame = spike_frames[index]
+                frame = spike_frames_import[index]
 
                 index = 1
             case 1:
-                frame = spike_frames[index]
+                frame = spike_frames_import[index]
 
                 index = 0
     else:
-        frame = spike_frames[index]
+        frame = spike_frames_import[index]
     if clock == 60:
         clock = 0
+    return frame
+
+#cycle frames teleporteer
+def teleporteer_cycle_animatie(teleporteer_frames_import):
+    global clock_v2, indexv2
+
+    clock_v2 += 1
+
+    if clock_v2 % 35 == 0:
+        match indexv2:
+            case 0:
+                frame = teleporteer_frames_import[indexv2]
+
+                indexv2 = 1
+            case 1:
+                frame = teleporteer_frames_import[indexv2]
+
+                indexv2 = 0
+    else:
+        frame = teleporteer_frames_import[indexv2]
+
+    if clock_v2 == 180:
+        clock_v2 = 0
+
     return frame
 #start up_scherm S
 
@@ -148,7 +240,11 @@ def draw_scr():
     vijanden = []
     skip = -1
     #
-    spike_cycle_frame = cycle_animaties()
+    spike_cycle_frame = spike_cycle_animaties(spike_frames)
+    teleporteer_cycle_frame_level_1_portal_1 = teleporteer_cycle_animatie(teleporteer_frames_level_1_portal_1)
+    teleporteer_cycle_frame_level_1_portal_2 = teleporteer_cycle_animatie(teleporteer_frames_level_1_portal_2)
+    teleporteer_cycle_frame_level_1_portal_3 = teleporteer_cycle_animatie(teleporteer_frames_level_1_portal_3)
+
     # maakt de achtergrond S
     win.fill((0, 0, 0))
     win.blit(achtergrond_foto, (0,0))
@@ -167,10 +263,33 @@ def draw_scr():
         spike.append(py.Rect((spike_plek[i], spike_dimensies[i])))
     # de teleporteer ingang M
     for i in range(len(teleporteer_binnen_locatie)):
-        teleporteer_binnen.append(py.draw.rect(win, (255, 255, 0), (teleporteer_binnen_locatie[i], teleporteer_binnen_dimensies[i])))
+        match i:
+            case 0:
+                win.blit(teleporteer_cycle_frame_level_1_portal_1, teleporteer_binnen_locatie[i])
+            case 1:
+                win.blit(teleporteer_cycle_frame_level_1_portal_2, teleporteer_binnen_locatie[i])
+            case 2:
+                win.blit(teleporteer_cycle_frame_level_1_portal_3, teleporteer_binnen_locatie[i])
+
+
+        teleporteer_binnen.append(py.Rect(teleporteer_binnen_locatie[i], teleporteer_binnen_dimensies[i]))
+#        teleporteer_binnen.append(py.draw.rect(win, (255, 255, 0), (teleporteer_binnen_locatie[i], teleporteer_binnen_dimensies[i])))
     # de teleporteer uitgang M
     for i in range(len(teleporteer_buiten_locatie)):
-        teleporteer_buiten.append(py.draw.rect(win, (0, 255, 0), (teleporteer_buiten_locatie[i], teleporteer_buiten_dimensies[i])))
+        # match i:
+        #     case 0:
+        #
+        #     case 1:
+        #
+        #     case 2:
+        #
+
+
+
+
+
+       teleporteer_buiten.append(py.Rect(teleporteer_buiten_locatie[i], teleporteer_buiten_dimensies[i]))
+        # teleporteer_buiten.append(py.draw.rect(win, (0, 255, 0), (teleporteer_buiten_locatie[i], teleporteer_buiten_dimensies[i])))
     # de vijanden L
     for i in range(len(vijanden_locatie)):
         vijanden.append(py.Rect(vijanden_locatie[i], vijanden_dimensies[i]))
@@ -216,12 +335,16 @@ def draw_scr():
     py.display.update()
 
 def draw_scr_level_2():
-    global speler_rect, muren_level_2, eindzone_rect_level_2, teleporteer_binnen_level_2, teleporteer_buiten_level_2, vijanden_level_2
+    global speler_rect, muren_level_2, eindzone_rect_level_2, teleporteer_binnen_level_2, teleporteer_buiten_level_2, vijanden_level_2, spike_level_2
     muren_level_2 = []
     teleporteer_binnen_level_2 = []
     teleporteer_buiten_level_2 = []
     vijanden_level_2 = []
+    spike_level_2 = []
     win.fill((255,255,255))
+    spike_frame_level_2_spike_1 = spike_cycle_animaties(spike_frames_level_2_spike_1)
+    spike_frame_level_2_spike_2 = spike_cycle_animaties(spike_frames_level_2_spike_2)
+    spike_frame_level_2_spike_3 = spike_cycle_animaties(spike_frames_level_2_spike_3)
 
     win.blit(achtergrond_foto_level_2,(0,0))
 
@@ -232,6 +355,18 @@ def draw_scr_level_2():
         teleporteer_binnen_level_2.append(py.draw.rect(win, (128, 128, 255), (teleporteer_binnen_locatie_level_2[i], teleporteer_binnen_dimensies_level_2[i])))
     for i in range(len(teleporteer_binnen_locatie_level_2)):
         teleporteer_buiten_level_2.append(py.draw.rect(win, (0, 255, 255), (teleporteer_buiten_locatie_level_2[i], teleporteer_buiten_dimensies_level_2[i])))
+
+    for i in range(len(spike_dimensies_level_2)):
+        match i:
+            case 0:
+                win.blit(spike_frame_level_2_spike_1, spike_plek_level_2[i])
+            case 1:
+                win.blit(spike_frame_level_2_spike_2, spike_plek_level_2[i])
+            case 2:
+                win.blit(spike_frame_level_2_spike_3, spike_plek_level_2[i])
+
+
+        spike_level_2.append(py.Rect(spike_plek_level_2[i], spike_dimensies_level_2[i]))
 
     for i in range(len(vijanden_locatie_level_2)):
         vijanden_level_2.append(py.Rect(vijanden_locatie_level_2[i], vijanden_dimensies_level_2[i]))
@@ -344,9 +479,9 @@ def botsing_vijand(object_rect, running_import, vijanden_import):
     return running
 
 # checkt of object met de spike botst komt veel overeen met botsing_vijand S
-def botsing_spikes(object_rect, running_import):
-    spike_hit = object_rect.collidelist(spike)
-    if spike_hit > -1:
+def botsing_spikes(object_rect, running_import, spike_import):
+    spike_hit = object_rect.collidelist(spike_import)
+    if spike_hit != -1:
         running = False
     else:
         running = running_import
@@ -457,7 +592,7 @@ def main(import_game_state):
                 draw_scr()
                 vijand_beweging(muren, vijanden, vijanden_locatie, beweeg_richting, teleporteer_binnen, teleporteer_buiten)
                 speler_x_y, tele_hit = botsing_teleporteren(speler_rect, teleporteer_binnen,teleporteer_buiten, speler_x_y)
-                running = botsing_spikes(speler_rect, running)
+                running = botsing_spikes(speler_rect, running, spike)
                 eind_botsing = botsing_eind_zone(speler_rect, eindzone_rect)
 
                 nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal, coin, gedeactiveerd)
@@ -558,6 +693,7 @@ def main(import_game_state):
                 vijand_beweging(muren_level_2, vijanden_level_2, vijanden_locatie_level_2, beweeg_richting_level_2, teleporteer_binnen_level_2, teleporteer_buiten_level_2)
 
                 running = botsing_vijand(speler_rect, running, vijanden_level_2)
+                running = botsing_spikes(speler_rect, running, spike_level_2)
 
                 nieuwe_coin_aantal, coin_deactivatie_komt = botsing_coin(speler_rect, coin_aantal, coin_level_2, gedeactiveerd_level_2)
                 coin_aantal = nieuwe_coin_aantal
